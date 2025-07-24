@@ -1,5 +1,10 @@
 const {ApolloServer} = require('apollo-server');
 const gql = require('graphql-tag');
+const mongoose = require('mongoose');
+
+const ArticleModel = require('./Models/ArticleModel');
+
+const DB_URI = 'your_uri';
 
 const typeDefs = gql`
     type Article{
@@ -9,19 +14,43 @@ const typeDefs = gql`
     }
 
     type Query{
-        getArticles:[Article]!
+        getArticles:[Article]!,
+        getArticle(id:ID!):Article!
+    }
+
+    type Mutation{
+        writeArticle(title:String!,content:String!):Article!
     }
 `;
 
 const resolvers = {
     Query:{
-        getArticles(){
-            const articles=[
-                {id:1,title:'Makale Başlık 1',content:'Makale içerik 1'},
-                {id:2,title:'Makale Başlık 2',content:'Makale içerik 2'},
-                {id:3,title:'Makale Başlık 3',content:'Makale içerik 3'}
-            ]
+        async getArticles(){
+            const articles=await ArticleModel.find();
             return articles;
+        },
+
+        async getArticle(parent,args){
+            try{
+                const {id}=args;
+                return await ArticleModel.findById(id);       
+            }catch(error){
+                throw new error;
+            }
+        }
+    },
+
+    Mutation:{
+        writeArticle:async (parent,args)=>{
+            try{
+                const article={
+                    title:args.title,
+                    content:args.content
+                }
+                return await ArticleModel.create(article);
+            }catch(error){
+                throw new error;
+            }
         }
     }
 };
@@ -31,6 +60,9 @@ const server = new ApolloServer({
     resolvers
 });
 
-server.listen({port:5000}).then((res)=>{
+mongoose.connect(DB_URI, {useNewUrlParser:true, useUnifiedTopology:true}).then(()=>{
+    console.log('MongoDB bağlantısı başarılı!');
+    return server.listen({port:5000});
+}).then((res)=>{
     console.log(`server ${res.url} adresinde çalışıyor!`);
 });
