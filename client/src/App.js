@@ -2,6 +2,7 @@ import {BrowserRouter as Router,Routes,Route} from 'react-router-dom';
 import './App.css';
 import ArticleList from './components/ArticleList';
 import WriteArticle from './components/WriteArticle';
+import ArticleDetail from './components/ArticleDetail';
 import Title from './components/Title';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
@@ -18,6 +19,7 @@ function App() {
       <Routes>
         <Route exact path="/" element={<ArticleList/>}  />
         <Route path="/add" element={<WriteArticle/>}  />
+        <Route path="/article/:id" element={<ArticleDetail/>}  />
       </Routes>
     </Router>
     </ApolloProvider>

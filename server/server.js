@@ -20,6 +20,7 @@ const typeDefs = gql`
 
     type Mutation{
         writeArticle(title:String!,content:String!):Article!
+        deleteArticle(id:ID!):String!
     }
 `;
 
@@ -48,6 +49,16 @@ const resolvers = {
                     content:args.content
                 }
                 return await ArticleModel.create(article);
+            }catch(error){
+                throw new error;
+            }
+        },
+
+        deleteArticle:async (_,args)=>{
+            try{
+                const {id}=args;
+                await ArticleModel.findByIdAndDelete(id);
+                return "Makale başarıyla silindi!";
             }catch(error){
                 throw new error;
             }
