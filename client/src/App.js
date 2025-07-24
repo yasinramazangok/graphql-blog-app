@@ -3,9 +3,16 @@ import './App.css';
 import ArticleList from './components/ArticleList';
 import WriteArticle from './components/WriteArticle';
 import Title from './components/Title';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+
+const client = new ApolloClient({
+  uri: 'http://localhost:5000/',
+  cache: new InMemoryCache()
+});
 
 function App() {
   return (
+    <ApolloProvider client={client}>
     <Router>
       <Title/>
       <Routes>
@@ -13,6 +20,7 @@ function App() {
         <Route path="/add" element={<WriteArticle/>}  />
       </Routes>
     </Router>
+    </ApolloProvider>
   );
 }
 
