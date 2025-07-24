@@ -2,8 +2,8 @@ import React from 'react'
 
 export default function WriteArticle(){
     return(
-        <di>
+        <div>
             Makale Yaz
-        </di>
+        </div>
     )
 }
